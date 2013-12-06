@@ -51,7 +51,3 @@ Just include `ruby-src` in your node's `run_list`:
   ]
 }
 ```
-
-License and Authors
--------------------
-Authors: Scott Klein <scott@statuspage.io>
