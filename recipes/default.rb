@@ -38,6 +38,29 @@ bash "install_ruby" do
   action :nothing
 end
 
+# Source: http://brandonparsons.me/2013/installing-gems-in-a-new-chef-system-ruby/
+#=========================
+# Install gems in new ruby
+#=========================
+
+# Need to reload OHAI to ensure the newest ruby is loaded up
+ohai "reload" do
+  action :reload
+end
+
+["bundler", "rake"].each do |gem_to_install|
+  ruby_block "install #{gem_to_install} in new ruby" do
+    block do
+      g = Chef::Resource::GemPackage.new(gem_to_install)
+      g.gem_binary "#{node[:ruby][:prefix]}/bin/gem"
+      #g.gem_binary "#{node['languages']['ruby']['bin_dir']}/gem"
+      g.run_action(:install)
+    end
+    action :create
+  end
+end
+
+
 bash "ensure_ruby_install" do
   not_if "#{node[:ruby][:prefix]}/bin/ruby -v | grep \"#{node[:ruby][:version].gsub('-', '')}\""
   user "root"
